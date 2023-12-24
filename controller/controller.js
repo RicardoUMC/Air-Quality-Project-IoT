@@ -3,8 +3,9 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const path = require('path');
+const axios = require('axios');
+const bodyParser = require('body-parser');
 const moment = require('moment');
-const bodyParser = require('body-parser'); // Importar body-parser para analizar los datos POST
 const sensorModel = require('../model/model.js');
 
 app.use(express.static(__dirname));
@@ -30,6 +31,38 @@ app.post('/', (req, res) => {
 // Ruta principal para cargar la vista
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../view/public/index.html'));
+});
+
+app.get('/getQuality', async (req, res) => {
+    console.log(`PATH: GET ${req.path}`);
+    try {
+        const response = await axios.get('http://192.168.0.180:80/' + req.path);
+        const qualityData = response.data; // Suponiendo que la respuesta contiene los datos de calidad
+        console.log(`Calidad: ${qualityData} PPM`);
+
+        // Aquí podrías hacer algo con los datos obtenidos, como pasarlo al módulo Modelo (MVC)
+        // Por ejemplo, podrías enviarlos como respuesta a la solicitud GET
+        res.json({ quality: qualityData });
+    } catch (error) {
+        console.error('Error al obtener la calidad:', error);
+        res.status(500).json({ error: 'Ocurrió un error al obtener la calidad' });
+    }
+});
+
+app.get('/getTemperature', async (req, res) => {
+    console.log(`PATH: GET ${req.path}`);
+    try {
+        const response = await axios.get('http://192.168.0.180:80/' + req.path); // Cambiar la ruta según tu API local
+        const temperatureData = response.data; // Suponiendo que la respuesta contiene los datos de temperatura
+        console.log(`Temperatura: ${temperatureData} °C`);
+
+        // Aquí podrías hacer algo con los datos obtenidos, como pasarlo al módulo Modelo (MVC)
+        // Por ejemplo, podrías enviarlos como respuesta a la solicitud GET
+        res.json({ temperature: temperatureData });
+    } catch (error) {
+        console.error('Error al obtener la temperatura:', error);
+        res.status(500).json({ error: 'Ocurrió un error al obtener la temperatura' });
+    }
 });
 
 // Al conectar un usuario
