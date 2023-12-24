@@ -6,9 +6,9 @@ const path = require('path');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const moment = require('moment');
-const sensorModel = require('../model/model.js');
+const model = require('../model/model.js');
 
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, '../view/public/')));
 
 // Middleware para analizar application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,14 +34,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/getQuality', async (req, res) => {
-    console.log(`PATH: GET ${req.path}`);
+    const time = moment().format('YYYY-MM-DD HH:mm:ss'); // Formato de fecha y hora deseado
+    console.log(`[${time}] METHOD: GET ${req.path}`);
     try {
-        const response = await axios.get('http://192.168.0.180:80/' + req.path);
+        const response = await axios.get('http://192.168.0.180:80' + req.path);
         const qualityData = response.data; // Suponiendo que la respuesta contiene los datos de calidad
-        console.log(`Calidad: ${qualityData} PPM`);
-
-        // Aquí podrías hacer algo con los datos obtenidos, como pasarlo al módulo Modelo (MVC)
-        // Por ejemplo, podrías enviarlos como respuesta a la solicitud GET
+        console.log(`\nCalidad: ${qualityData} PPM\n`);
+        
+        // Enviarlo como respuesta a la solicitud GET
         res.json({ quality: qualityData });
     } catch (error) {
         console.error('Error al obtener la calidad:', error);
@@ -50,14 +50,14 @@ app.get('/getQuality', async (req, res) => {
 });
 
 app.get('/getTemperature', async (req, res) => {
-    console.log(`PATH: GET ${req.path}`);
+    const time = moment().format('YYYY-MM-DD HH:mm:ss'); // Formato de fecha y hora deseado
+    console.log(`[${time}] METHOD: GET ${req.path}`);
     try {
-        const response = await axios.get('http://192.168.0.180:80/' + req.path); // Cambiar la ruta según tu API local
+        const response = await axios.get('http://192.168.0.180:80' + req.path); // Cambiar la ruta según tu API local
         const temperatureData = response.data; // Suponiendo que la respuesta contiene los datos de temperatura
-        console.log(`Temperatura: ${temperatureData} °C`);
+        console.log(`\nTemperatura: ${temperatureData} °C\n`);
 
-        // Aquí podrías hacer algo con los datos obtenidos, como pasarlo al módulo Modelo (MVC)
-        // Por ejemplo, podrías enviarlos como respuesta a la solicitud GET
+        // Enviarlo como respuesta a la solicitud GET
         res.json({ temperature: temperatureData });
     } catch (error) {
         console.error('Error al obtener la temperatura:', error);
