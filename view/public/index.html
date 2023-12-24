@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sensor Data</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+  <h1>Valores de Sensores</h1>
+  <p id="temperature">Temperatura: -- °C</p>
+  <p id="quality">Calidad del aire: -- PPM</p>
+
+  <script>
+    const socket = io();
+    // Manejar el evento 'connected' emitido desde el servidor
+    socket.on('connected', (message) => {
+      console.log(message);
+    });    
+
+    socket.on('sensorData', (data) => {
+      document.getElementById('temperature').innerText = `Temperatura: ${data.temperature} °C`;
+      document.getElementById('quality').innerText = `Calidad del aire: ${data.airQuality} PPM`;
+    });
+  </script>
+</body>
+
+</html>
