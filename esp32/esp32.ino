@@ -181,7 +181,7 @@ int handleWebRequests() {
       }
       
       else if (request.indexOf("GET /getQuality") != -1) {
-        if (temperatureEnable) sendHTTPResponse(String(analogRead(mqPin)));
+        if (qualityEnabled) sendHTTPResponse(String(analogRead(mqPin)));
         else sendHTTPResponse("Not Enable");
       }
       
