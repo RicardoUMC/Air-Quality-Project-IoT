@@ -262,16 +262,10 @@ int sendSensorsData(String &data) {
 
 void sendHTTPResponse(String content) {
   client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
+  client.println("Content-Type: text/plain");
   client.println("Connection: close");
   client.println();
-  client.println("<!DOCTYPE HTML>");
-  client.println("<html>");
-  client.println("<head><title>ESP32 Web Server</title><meta charset='utf-8' /></head>");
-  client.println("<body>");
-  client.println("<h1>" + content + "</h1>");
-  client.println("</body>");
-  client.println("</html>");
+  client.println(content);
   client.println();
 }
 
