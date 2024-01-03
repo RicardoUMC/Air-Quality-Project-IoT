@@ -48,13 +48,14 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED && counterConnection < 10) {
     delay(500);
     Serial.print(".");
+    counterConnection++;
   }
 
   if (counterConnection < 10) {
-    IPAddress ip(192,168,0,180);
-    IPAddress gateway(192,168,0,1);
-    IPAddress subnet(255,255,0,0);
-    WiFi.config(ip, gateway, subnet);
+    // IPAddress ip(192,168,0,180);
+    // IPAddress gateway(192,168,0,1);
+    // IPAddress subnet(255,255,0,0);
+    // WiFi.config(ip, gateway, subnet);
 
     Serial.println("");
     Serial.println("Conectado al WiFi");
@@ -221,6 +222,11 @@ int handleWebRequests() {
       else if (request.indexOf("GET /nombre") != -1) {
         processCommand('g');
         sendHTTPResponse("Nombre: " + (String) ssid);
+      }
+
+      else {
+        sendHTTPResponse("Comando GET no reconocido");
+        return 0;
       }
       
       client.flush();
