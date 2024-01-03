@@ -33,13 +33,15 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../view/public/index.html'));
 });
 
+// Rutas GET
 app.get('/getQuality', async (req, res) => {
-    const time = moment().format('YYYY-MM-DD HH:mm:ss'); // Formato de fecha y hora deseado
+    let time = moment().format('YYYY-MM-DD HH:mm:ss'); // Formato de fecha y hora deseado
     console.log(`[${time}] METHOD: GET ${req.path}`);
     try {
-        const response = await axios.get('http://192.168.0.180:80' + req.path);
+        const response = await axios.get('http://192.168.1.147:8080' + req.path);
         const qualityData = response.data; // Suponiendo que la respuesta contiene los datos de calidad
-        console.log(`\nCalidad: ${qualityData} PPM\n`);
+        time = moment().format('YYYY-MM-DD HH:mm:ss');
+        console.log(`[${time}] Calidad: ${qualityData} PPM\n`);
         
         // Enviarlo como respuesta a la solicitud GET
         res.json({ quality: qualityData });
@@ -50,18 +52,36 @@ app.get('/getQuality', async (req, res) => {
 });
 
 app.get('/getTemperature', async (req, res) => {
-    const time = moment().format('YYYY-MM-DD HH:mm:ss'); // Formato de fecha y hora deseado
+    let time = moment().format('YYYY-MM-DD HH:mm:ss'); // Formato de fecha y hora deseado
     console.log(`[${time}] METHOD: GET ${req.path}`);
     try {
-        const response = await axios.get('http://192.168.0.180:80' + req.path); // Cambiar la ruta según tu API local
+        const response = await axios.get('http://192.168.1.147:8080' + req.path); // Cambiar la ruta según tu API local
         const temperatureData = response.data; // Suponiendo que la respuesta contiene los datos de temperatura
-        console.log(`\nTemperatura: ${temperatureData} °C\n`);
+        time = moment().format('YYYY-MM-DD HH:mm:ss');
+        console.log(`[${time}] Temperatura: ${temperatureData}°C\n`);
 
         // Enviarlo como respuesta a la solicitud GET
         res.json({ temperature: temperatureData });
     } catch (error) {
         console.error('Error al obtener la temperatura:', error);
         res.status(500).json({ error: 'Ocurrió un error al obtener la temperatura' });
+    }
+});
+
+app.get('/getHumidity', async (req, res) => {
+    let time = moment().format('YYYY-MM-DD HH:mm:ss'); // Formato de fecha y hora deseado
+    console.log(`[${time}] METHOD: GET ${req.path}`);
+    try {
+        const response = await axios.get('http://192.168.1.147:8080' + req.path); // Cambiar la ruta según tu API local
+        const humidityData = response.data; // Suponiendo que la respuesta contiene los datos de humedad
+        time = moment().format('YYYY-MM-DD HH:mm:ss');
+        console.log(`[${time}] Humedad: ${humidityData}%\n`);
+
+        // Enviarlo como respuesta a la solicitud GET
+        res.json({ humidity: humidityData });
+    } catch (error) {
+        console.error('Error al obtener la humedad:', error);
+        res.status(500).json({ error: 'Ocurrió un error al obtener la humedad' });
     }
 });
 

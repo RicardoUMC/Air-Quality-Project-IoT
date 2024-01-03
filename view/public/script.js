@@ -24,6 +24,16 @@ async function getData() {
         // Muestra los datos en la página HTML
         document.getElementById('temperatureData').innerText = `${data.temperature}°C`;
     } catch (error) {
-        console.error('Error al obtener los datos de calidad:', error);
+        console.error('Error al obtener los datos de temperatura:', error);
+    }
+
+    try {
+        const response = await fetch('/getHumidity'); // Realiza la solicitud GET al servidor
+        const data = await response.json(); // Obtiene los datos en formato JSON
+
+        // Muestra los datos en la página HTML
+        document.getElementById('humidity').innerText = `${data.humidity}%`;
+    } catch (error) {
+        console.error('Error al obtener los datos de humedad:', error);
     }
 }
