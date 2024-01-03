@@ -27,7 +27,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2); // Dirección I2C, número de columnas y fil
 char *ssid = "--------";
 char *password = "--------";
 
-WiFiServer server(80);
+WiFiServer server(8080);
 WiFiClient client;
 String serverAddress = "http://192.168.0.6:8080/";
 
@@ -52,10 +52,10 @@ void setup() {
   }
 
   if (counterConnection < 10) {
-    // IPAddress ip(192,168,0,180);
-    // IPAddress gateway(192,168,0,1);
-    // IPAddress subnet(255,255,0,0);
-    // WiFi.config(ip, gateway, subnet);
+    IPAddress ip(192,168,1,147);
+    IPAddress gateway(192,168,1,254);
+    IPAddress subnet(255,255,255,0);
+    WiFi.config(ip, gateway, subnet);
 
     Serial.println("");
     Serial.println("Conectado al WiFi");
@@ -189,6 +189,10 @@ int handleWebRequests() {
       else if (request.indexOf("GET /getTemperature") != -1) {
         if (temperatureEnable) sendHTTPResponse(String(dht.getTemperature()));
         else sendHTTPResponse("Not Enable");
+      }
+      
+      else if (request.indexOf("GET /getHumidity") != -1) {
+        sendHTTPResponse(String(dht.getHumidity()));
       }
       
       else if (request.indexOf("GET /changeName") != -1) {
