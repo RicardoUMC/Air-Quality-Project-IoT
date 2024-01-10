@@ -7,6 +7,7 @@
 #define BLUE 25
 #define GREEN 26
 #define RED 27
+#define PORT 8080
 
 int counterConnection = 0;
 
@@ -27,7 +28,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2); // Dirección I2C, número de columnas y fil
 char *ssid = "--------";
 char *password = "--------";
 
-WiFiServer server(8080);
+WiFiServer server(PORT);
 WiFiClient client;
 String serverAddress = "http://192.168.0.6:8080/";
 
@@ -42,7 +43,10 @@ void setup() {
 
   Serial.begin(9600);
 
-/********************* CONEXIÓN A UNA RED WIFI ***********************/
+  lcd.init();
+  lcd.backlight();
+
+  /********************* CONEXIÓN A UNA RED WIFI ***********************/
   WiFi.begin(ssid,password);
 
   while (WiFi.status() != WL_CONNECTED && counterConnection < 10) {
@@ -60,19 +64,33 @@ void setup() {
     Serial.println("");
     Serial.println("Conectado al WiFi");
 
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Conectado");
+    lcd.setCursor(0, 1);
+    lcd.print("al WiFi");
+
     server.begin();
     Serial.print("API ESP32 desplegado en la ip 'http://");
     Serial.print(WiFi.localIP());
-    Serial.println(":80'");
+    Serial.print(":");
+    Serial.print(PORT);
+    Serial.println("'");
   } else {
     Serial.println("");
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("No conectado");
+    lcd.setCursor(0, 1);
+    lcd.print("al WiFi");
   }
+
+  delay(1500);
 /**********************************************************************/
 
   dht.setup(temPin, DHTesp::DHT11);
   
-  lcd.init();
-  lcd.backlight();
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Proyecto de IoT");
