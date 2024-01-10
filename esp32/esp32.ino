@@ -56,9 +56,9 @@ void setup() {
   }
 
   if (counterConnection < 10) {
-    IPAddress ip(192,168,1,147);
-    IPAddress gateway(192,168,1,254);
-    IPAddress subnet(255,255,255,0);
+    IPAddress ip(192,168,0,7);
+    IPAddress gateway(192,168,0,0);
+    IPAddress subnet(255,255,0,0);
     WiFi.config(ip, gateway, subnet);
 
     Serial.println("");
