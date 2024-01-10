@@ -5,35 +5,24 @@ socket.on('connected', (message) => {
     console.log(message);
 });
 
-// Esta función hace una solicitud GET al servidor Express
-async function getData() {
+const button = document.getElementById('refresh-button');
+
+button.addEventListener('click', async () => {
     try {
-        const response = await fetch('/getQuality'); // Realiza la solicitud GET al servidor
-        const data = await response.json(); // Obtiene los datos en formato JSON
+        // Hacer una solicitud al servidor al hacer clic en el botón
+        const response = await fetch('/getSensorsData');
 
-        // Muestra los datos en la página HTML
-        document.getElementById('PPM').innerText = `${data.quality} PPM`;
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Respuesta del servidor:', responseData);
+            
+            document.getElementById('PPM').innerText = `${responseData.airQuality} PPM`;
+            document.getElementById('temperatureData').innerText = `${responseData.temperature}°C`;
+            document.getElementById('humidity').innerText = `${responseData.humidity}%`;
+        } else {
+            throw new Error('Error al obtener la respuesta del servidor');
+        }
     } catch (error) {
-        console.error('Error al obtener los datos de calidad:', error);
+        console.error('Error al hacer clic en el botón:', error);
     }
-
-    try {
-        const response = await fetch('/getTemperature'); // Realiza la solicitud GET al servidor
-        const data = await response.json(); // Obtiene los datos en formato JSON
-
-        // Muestra los datos en la página HTML
-        document.getElementById('temperatureData').innerText = `${data.temperature}°C`;
-    } catch (error) {
-        console.error('Error al obtener los datos de temperatura:', error);
-    }
-
-    try {
-        const response = await fetch('/getHumidity'); // Realiza la solicitud GET al servidor
-        const data = await response.json(); // Obtiene los datos en formato JSON
-
-        // Muestra los datos en la página HTML
-        document.getElementById('humidity').innerText = `${data.humidity}%`;
-    } catch (error) {
-        console.error('Error al obtener los datos de humedad:', error);
-    }
-}
+});
