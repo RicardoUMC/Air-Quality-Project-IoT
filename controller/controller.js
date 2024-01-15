@@ -38,7 +38,7 @@ app.get('/getSensorsData', async (req, res) => {
         model.consoleTime(`Temperatura: ${temperatureResponse}`);
         model.consoleTime(`Humedad: ${humidityResponse}`);
 
-        const processedData = await model.processSensorData(
+        const processedData = await model.formatDataToJSON(
             airQualityResponse,
             temperatureResponse,
             humidityResponse
@@ -47,7 +47,7 @@ app.get('/getSensorsData', async (req, res) => {
         // Enviar los datos procesados como respuesta en formato JSON
         res.json(processedData);
     } catch (error) {
-        model.consoleTime(`Error al obtener los valores:${error}`);
+        model.consoleTime(`Error en la obtención de datos: ${error}`);
         res.status(500).json({ error: 'Ocurrió un error al obtener los valores' });
     }
 });

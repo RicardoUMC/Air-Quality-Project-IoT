@@ -1,12 +1,36 @@
 const moment = require('moment');
 const axios = require('axios');
 
-async function processSensorData(airQualityResponse, temperatureResponse, humidityResponse) {
+function processSensorData(airQualityResponse, temperatureResponse, humidityResponse) {
+    if (airQualityResponse === "Not Enabled") {
+        airQualityResponse = "Sensor deshabilitado";
+    } else {
+        airQualityResponse = airQualityResponse + " PPM";
+    }
+
+    if (temperatureResponse === "Not Enabled") {
+        temperatureResponse = "Sensor deshabilitado";
+    } else {
+        temperatureResponse = temperatureResponse + "°C";
+    }
+
+    if (humidityResponse === "Not Enabled") {
+        humidityResponse = "Sensor deshabilitado";
+    } else {
+        humidityResponse = humidityResponse + "%";
+    }
+
+    return [airQualityResponse,temperatureResponse,humidityResponse]
+}
+
+async function formatDataToJSON(airQualityResponse, temperatureResponse, humidityResponse) {
     try {
+        let processData = processSensorData(airQualityResponse, temperatureResponse, humidityResponse);
+        
         const [airQuality, temperature, humidity] = await Promise.all([
-            airQualityResponse,
-            temperatureResponse,
-            humidityResponse
+            processData[0],
+            processData[1],
+            processData[2]
         ]);
 
         // Procesar los datos recibidos y devolver un objeto JSON
@@ -29,7 +53,7 @@ async function getQualityData() {
         // Procesar la respuesta y devolver los datos de calidad
         return response.data;
     } catch (error) {
-        throw `Error al tratar de conseguir el valor de calidad de aire:${error}`;
+        throw `No se pudo conseguir el valor de calidad de air. ${error}`;
     }
 }
 
@@ -39,7 +63,7 @@ async function getTemperatureData() {
         // Procesar la respuesta y devolver los datos de temperatura
         return response.data;
     } catch (error) {
-        throw `Error al tratar de conseguir el valor de temperatura:${error}`;
+        throw `No se pudo conseguir el valor de temperatura. ${error}`;
     }
 }
 
@@ -49,7 +73,7 @@ async function getHumidityData() {
         // Procesar la respuesta y devolver los datos de humedad
         return response.data;
     } catch (error) {
-        throw `Error al tratar de conseguir el valor de humedad:${error}`;
+        throw `No se pudo conseguir el valor de humedad. ${error}`;
     }
 }
 
@@ -60,7 +84,7 @@ function consoleTime(message) {
 
 module.exports = {
     processSensorData,
-    getSensorsData,
+    formatDataToJSON,
     getQualityData,
     getTemperatureData,
     getHumidityData,
