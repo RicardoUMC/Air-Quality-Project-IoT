@@ -16,6 +16,7 @@ const int temPin = 15;
 const int buzzerPin = 14;
 
 bool temperatureEnable = true;
+bool humidityEnable = true;
 bool qualityEnabled = true;
 bool activateActuator = true;
 
@@ -191,12 +192,12 @@ int handleWebRequests() {
 
       if (request.indexOf("GET /LCD/On") != -1) {
         processCommand('l');
-        sendHTTPResponse("Encender retroiluminación.");
+        sendHTTPResponse("true");
       }
       
       else if (request.indexOf("GET /LCD/Off") != -1) {
         processCommand('d');
-        sendHTTPResponse("Apagar retroiluminación.");
+        sendHTTPResponse("false");
       }
       
       else if (request.indexOf("GET /getQuality") != -1) {
@@ -210,12 +211,8 @@ int handleWebRequests() {
       }
       
       else if (request.indexOf("GET /getHumidity") != -1) {
-        sendHTTPResponse(String(dht.getHumidity()));
-      }
-      
-      else if (request.indexOf("GET /changeName") != -1) {
-        processCommand('n');
-        sendHTTPResponse("Ingrese el nombre nuevo para el dispositivo:");
+        if (humidityEnable) sendHTTPResponse(String(dht.getHumidity()));
+        else sendHTTPResponse("Not Enable");
       }
       
       else if (request.indexOf("GET /resetDevice") != -1) {
@@ -225,8 +222,14 @@ int handleWebRequests() {
       
       else if (request.indexOf("GET /temperature") != -1) {
         processCommand('t');
-        buffer = (temperatureEnable) ? "habilitada." : "deshabilitada.";
+        buffer = (temperatureEnable) ? "habilitado." : "deshabilitado.";
         sendHTTPResponse("Senseo de temperatura " + buffer);
+      }
+      
+      else if (request.indexOf("GET /humidity") != -1) {
+        processCommand('h');
+        buffer = (humidityEnable) ? "habilitado." : "deshabilitado.";
+        sendHTTPResponse("Senseo de humedad " + buffer);
       }
       
       else if (request.indexOf("GET /quality") != -1) {
@@ -240,14 +243,14 @@ int handleWebRequests() {
         buffer = (activateActuator) ? "habilitados" : "deshabilitados";
         sendHTTPResponse("Actuadores " + buffer);
       }
-      
-      else if (request.indexOf("GET /nombre") != -1) {
-        processCommand('g');
-        sendHTTPResponse("Nombre: " + (String) ssid);
-      }
 
       else {
-        sendHTTPResponse("Comando GET no reconocido");
+        client.println("HTTP/1.1 404");
+        client.println("Content-Type: text/plain");
+        client.println("Connection: close");
+        client.println();
+        client.println("Not Found");
+        client.println();
         return 0;
       }
       
@@ -317,34 +320,6 @@ void processCommand(char command) {
       lcd.print("Retroiluminacion OFF");
       Serial.println("Comando ejecutado: Apagar retroiluminación.");
       break;
-    case 'S':
-    case 's':
-      lcd.scrollDisplayRight();
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Desplazamiento der.");
-      Serial.println("Comando ejecutado: Desplazar hacia la derecha.");
-      break;
-    case 'R':
-    case 'r':
-      lcd.home();
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Posicion original");
-      Serial.println("Comando ejecutado: Volver a la posición original.");
-      break;
-    case 'N':
-    case 'n':
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Ingrese un");
-      lcd.setCursor(0, 1);
-      lcd.print("nombre nuevo:");
-      Serial.println("Ingrese el nombre nuevo para el dispositivo:");
-      changessid();
-      delay(3000);
-      lcd.clear();
-      break;
     case 'X':
     case 'x':
       lcd.clear();
@@ -360,6 +335,12 @@ void processCommand(char command) {
       delay(1000);
       lcd.clear();
       break;
+    case 'H':
+    case 'h':
+      toggleHumidityDataSending();
+      delay(1000);
+      lcd.clear();
+      break;
     case 'Q':
     case 'q':
       toggleQualityDataSending();
@@ -370,18 +351,6 @@ void processCommand(char command) {
     case 'a':
       toggleActuator();
       delay(1000);
-      lcd.clear();
-      break;
-    case 'G':
-    case 'g':
-      // Muestra el nombre actual del dispositivo Bluetooth
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Nombre BT Actual:");
-      lcd.setCursor(0, 1);
-      lcd.print(ssid);
-      Serial.println("Comando ejecutado: Mostrar nombre del dispositivo Bluetooth.");
-      delay(3000);
       lcd.clear();
       break;
     default:
@@ -395,9 +364,6 @@ void processCommand(char command) {
   }
 }
 
-// TODO
-void changessid() {}
-
 void toggleTempDataSending() {
   temperatureEnable = !temperatureEnable;
   if (temperatureEnable) {
@@ -407,12 +373,21 @@ void toggleTempDataSending() {
   }
 }
 
+void toggleHumidityDataSending() {
+  humidityEnable = !humidityEnable;
+  if (humidityEnable) {
+    Serial.println("Comando ejecutado: Enviar datos del sensor de humedad.");
+  } else {
+    Serial.println("Comando ejecutado: Detener datos del sensor de humedad.");
+  }
+}
+
 void toggleQualityDataSending() {
   qualityEnabled = !qualityEnabled;
   if (qualityEnabled) {
-    Serial.println("Comando ejecutado: Enviar datos del sensor de calidad del aire.");
+    Serial.println("Comando ejecutado: Enviar datos del sensor de particulas en el aire.");
   } else {
-    Serial.println("Comando ejecutado: Detener datos del sensor de calidad del aire.");
+    Serial.println("Comando ejecutado: Detener datos del sensor de particulas en el aire.");
   }
 }
 
