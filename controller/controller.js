@@ -53,14 +53,34 @@ app.get('/getSensorsData', async (req, res) => {
 });
 
 app.get('/lcdBacklight', async (req, res) => {
-    const lcdStatus = await model.toggleLCD(req.path);
-    res.json({ lcd: lcdStatus });
+    const state = await model.toggleLCD(req.path);
+    res.json({ lcd: state });
 });
 
-app.get('/quality', async (req, res) => {});
-app.get('/temperature', async (req, res) => {});
-app.get('/humidity', async (req, res) => {});
-app.get('/resetDevice', async (req, res) => {});
+app.get('/quality', async (req, res) => {
+    const state = await model.toggleQuality(req.path);
+    res.json({ qualityState: state });
+});
+
+app.get('/temperature', async (req, res) => {
+    const state = await model.toggleTemperature(req.path);
+    res.json({ temperatureState: state });
+});
+
+app.get('/humidity', async (req, res) => {
+    const state = await model.toggleHumidity(req.path);
+    res.json({ humidityState: state });
+});
+
+app.get('/actuators', async (req, res) => {
+    const state = await model.toggleActuators(req.path);
+    res.json({ actuatorsState: state });
+});
+
+app.get('/resetDevice', async (req, res) => {
+    const messageText = await model.resetDevice(req.path);
+    res.json({ message: messageText });
+});
 
 // Al conectar un usuario
 io.on('connection', (socket) => {
