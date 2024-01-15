@@ -10,6 +10,7 @@ const toggleLCD = document.getElementById('toggle-lcd');
 const toggleParticles = document.getElementById('toggle-particles');
 const toggleTemperature = document.getElementById('toggle-temperature');
 const toggleHumidity = document.getElementById('toggle-humidity');
+const toggleActuators = document.getElementById('toggle-actuators');
 const restartDevice = document.getElementById('restart-device');
 
 button.addEventListener('click', async () => {
@@ -63,7 +64,7 @@ toggleParticles.addEventListener('click', async () => {
             const responseData = await response.json();
 
             let span = document.getElementById('results');
-            if (responseData.ppm) {
+            if (responseData.qualityState) {
                 toggleParticles.innerText = "Deshabilitar PPM";
                 span.innerText = "Lectura de PPM habilitada";
             } else {
@@ -87,19 +88,19 @@ toggleTemperature.addEventListener('click', async () => {
             const responseData = await response.json();
 
             let span = document.getElementById('results');
-            if (responseData.lcd) {
-                toggleParticles.innerText = "Deshabilitar PPM";
-                span.innerText = "Lectura de PPM habilitada";
+            if (responseData.temperatureState) {
+                toggleTemperature.innerText = "Deshabilitar temperatura";
+                span.innerText = "Lectura de temperatura habilitada";
             } else {
-                toggleParticles.innerText = "Habilitar PPM";
-                span.innerText = "Lectura de PPM deshabilitada";
+                toggleTemperature.innerText = "Habilitar temperatura";
+                span.innerText = "Lectura de temperatura deshabilitada";
             }
 
         } else {
             throw new Error('Error al obtener la respuesta del servidor');
         }
     } catch (error) {
-        console.error('Error al hacer clic en el botón:', error);
+        console.error('Error al habilitar/deshabilitar lectura de temperatura:', error);
     }
 });
 
@@ -108,12 +109,46 @@ toggleHumidity.addEventListener('click', async () => {
         const response = await fetch('/humidity');
 
         if (response.ok) {
-            
+            const responseData = await response.json();
+
+            let span = document.getElementById('results');
+            if (responseData.humidityState) {
+                toggleHumidity.innerText = "Deshabilitar humedad";
+                span.innerText = "Lectura de humedad habilitada";
+            } else {
+                toggleHumidity.innerText = "Habilitar humedad";
+                span.innerText = "Lectura de humedad deshabilitada";
+            }
+
         } else {
             throw new Error('Error al obtener la respuesta del servidor');
         }
     } catch (error) {
-        console.error('Error al habilitar/deshabilitar el senseo de humedad:', error);
+        console.error('Error al habilitar/deshabilitar lectura de humedad:', error);
+    }
+});
+
+toggleActuators.addEventListener('click', async () => {
+    try {
+        const response = await fetch('/actuators');
+
+        if (response.ok) {
+            const responseData = await response.json();
+
+            let span = document.getElementById('results');
+            if (responseData.actuatorsState) {
+                toggleActuators.innerText = "Deshabilitar actuadores";
+                span.innerText = "Actuadores habilitados";
+            } else {
+                toggleActuators.innerText = "Habilitar actuadores";
+                span.innerText = "Actuadores deshabilitados";
+            }
+
+        } else {
+            throw new Error('Error al obtener la respuesta del servidor');
+        }
+    } catch (error) {
+        console.error('Error al habilitar/deshabilitar los actuadores:', error);
     }
 });
 
