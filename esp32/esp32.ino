@@ -401,6 +401,10 @@ void toggleActuator() {
   if (actuatorsEnabled) {
     Serial.println("Comando ejecutado: Activar el actuador (LED y Buzzer).");
   } else {
+    digitalWrite(RED, LOW);
+    digitalWrite(GREEN, LOW);
+    digitalWrite(BLUE, LOW);
+    digitalWrite(buzzerPin, LOW);
     Serial.println("Comando ejecutado: Desactivar el actuador (LED y Buzzer).");
   }
 }
