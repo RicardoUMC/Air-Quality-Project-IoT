@@ -137,29 +137,31 @@ int readQuality() {
   lcd.print(readedValue);
   lcd.print(" PPM");
 
-  if (readedValue < 135)
-  {
-    digitalWrite(GREEN, HIGH);
-    digitalWrite(BLUE, LOW);
-    digitalWrite(RED, LOW);
-  }
-  else if (readedValue < 155)
-  {
-    digitalWrite(BLUE, HIGH);
-    digitalWrite(GREEN, LOW);
-    digitalWrite(RED, LOW);
-  }
-  else
-  {
-    digitalWrite(RED, HIGH);
-    digitalWrite(GREEN, LOW);
-    digitalWrite(BLUE, LOW);
-  }
+  if (actuatorsEnabled) {
+    if (readedValue < 135)
+    {
+      digitalWrite(GREEN, HIGH);
+      digitalWrite(BLUE, LOW);
+      digitalWrite(RED, LOW);
+    }
+    else if (readedValue < 155)
+    {
+      digitalWrite(BLUE, HIGH);
+      digitalWrite(GREEN, LOW);
+      digitalWrite(RED, LOW);
+    }
+    else
+    {
+      digitalWrite(RED, HIGH);
+      digitalWrite(GREEN, LOW);
+      digitalWrite(BLUE, LOW);
+    }
 
-  if (readedValue >= 180 && actuatorsEnabled) 
-    digitalWrite(buzzerPin, HIGH);
-  else
-    digitalWrite(buzzerPin, LOW);
+    if (readedValue >= 180) 
+      digitalWrite(buzzerPin, HIGH);
+    else
+      digitalWrite(buzzerPin, LOW);
+  }
 
   return readedValue;
 }
