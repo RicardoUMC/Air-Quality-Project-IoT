@@ -204,12 +204,12 @@ int handleWebRequests() {
       
       else if (request.indexOf("GET /getTemperature") != -1) {
         if (temperatureEnabled) sendHTTPResponse(String(dht.getTemperature()));
-        else sendHTTPResponse(String(temperatureEnable));
+        else sendHTTPResponse(String(temperatureEnabled));
       }
       
       else if (request.indexOf("GET /getHumidity") != -1) {
         if (humidityEnabled) sendHTTPResponse(String(dht.getHumidity()));
-        else sendHTTPResponse(String(humidityEnable));
+        else sendHTTPResponse(String(humidityEnabled));
       }
       
       else if (request.indexOf("GET /resetDevice") != -1) {
@@ -368,8 +368,8 @@ void resetESP() {
 }
 
 void toggleTempDataSending() {
-  temperatureEnable = !temperatureEnable;
-  if (temperatureEnable) {
+  temperatureEnabled = !temperatureEnabled;
+  if (temperatureEnabled) {
     Serial.println("Comando ejecutado: Enviar datos del sensor de temperatura.");
   } else {
     Serial.println("Comando ejecutado: Detener datos del sensor de temperatura.");
@@ -377,8 +377,8 @@ void toggleTempDataSending() {
 }
 
 void toggleHumidityDataSending() {
-  humidityEnable = !humidityEnable;
-  if (humidityEnable) {
+  humidityEnabled = !humidityEnabled;
+  if (humidityEnabled) {
     Serial.println("Comando ejecutado: Enviar datos del sensor de humedad.");
   } else {
     Serial.println("Comando ejecutado: Detener datos del sensor de humedad.");
