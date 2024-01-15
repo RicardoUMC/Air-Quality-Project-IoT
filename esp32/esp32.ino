@@ -79,6 +79,7 @@ void setup() {
     Serial.println("'");
   } else {
     Serial.println("");
+    Serial.println("No conectado al WiFi");
 
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -352,6 +353,9 @@ void processCommand(char command) {
       toggleActuator();
       delay(1000);
       lcd.clear();
+      break;
+    case '\n':
+    case '\r':
       break;
     default:
       lcd.clear();
