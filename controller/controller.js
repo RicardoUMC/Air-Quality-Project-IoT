@@ -48,9 +48,19 @@ app.get('/getSensorsData', async (req, res) => {
         res.json(processedData);
     } catch (error) {
         model.consoleTime(`Error en la obtención de datos: ${error}`);
-        res.status(500).json({ error: 'Ocurrió un error al obtener los valores' });
+        res.status(500).json({ error: 'Ocurrió un error al obtener el de los sensores' });
     }
 });
+
+app.get('/lcdBacklight', async (req, res) => {
+    const lcdStatus = await model.toggleLCD(req.path);
+    res.json({ lcd: lcdStatus });
+});
+
+app.get('/quality', async (req, res) => {});
+app.get('/temperature', async (req, res) => {});
+app.get('/humidity', async (req, res) => {});
+app.get('/resetDevice', async (req, res) => {});
 
 // Al conectar un usuario
 io.on('connection', (socket) => {

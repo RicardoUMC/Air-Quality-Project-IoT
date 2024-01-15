@@ -26,14 +26,13 @@ function processSensorData(airQualityResponse, temperatureResponse, humidityResp
 async function formatDataToJSON(airQualityResponse, temperatureResponse, humidityResponse) {
     try {
         let processData = processSensorData(airQualityResponse, temperatureResponse, humidityResponse);
-        
+
         const [airQuality, temperature, humidity] = await Promise.all([
             processData[0],
             processData[1],
             processData[2]
         ]);
 
-        // Procesar los datos recibidos y devolver un objeto JSON
         const processedData = {
             airQuality,
             temperature,
@@ -50,7 +49,7 @@ async function formatDataToJSON(airQualityResponse, temperatureResponse, humidit
 async function getQualityData() {
     try {
         const response = await axios.get('http://192.168.0.7:8080/getQuality');
-        // Procesar la respuesta y devolver los datos de calidad
+
         return response.data;
     } catch (error) {
         throw `No se pudo conseguir el valor de calidad de air. ${error}`;
@@ -60,7 +59,7 @@ async function getQualityData() {
 async function getTemperatureData() {
     try {
         const response = await axios.get('http://192.168.0.7:8080/getTemperature');
-        // Procesar la respuesta y devolver los datos de temperatura
+
         return response.data;
     } catch (error) {
         throw `No se pudo conseguir el valor de temperatura. ${error}`;
@@ -70,10 +69,20 @@ async function getTemperatureData() {
 async function getHumidityData() {
     try {
         const response = await axios.get('http://192.168.0.7:8080/getHumidity');
-        // Procesar la respuesta y devolver los datos de humedad
+        
         return response.data;
     } catch (error) {
         throw `No se pudo conseguir el valor de humedad. ${error}`;
+    }
+}
+
+async function toggleLCD(path) {
+    try {
+        const response = await axios.get('http://192.168.0.7:8080' + path);
+
+        return response.data;
+    } catch (error) {
+        throw `No se pudo modificar la retroiluminación de la LCD. ${error}`;
     }
 }
 
@@ -88,5 +97,6 @@ module.exports = {
     getQualityData,
     getTemperatureData,
     getHumidityData,
+    toggleLCD,
     consoleTime
 };
