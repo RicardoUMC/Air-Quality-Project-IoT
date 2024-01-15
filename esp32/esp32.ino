@@ -16,10 +16,10 @@ const int temPin = 15;
 const int buzzerPin = 14;
 
 bool lcdBacklight = true;
-bool temperatureEnable = true;
-bool humidityEnable = true;
+bool temperatureEnabled = true;
+bool humidityEnabled = true;
 bool qualityEnabled = true;
-bool activateActuator = true;
+bool actuatorsEnabled = true;
 
 unsigned long lastReadTime = 0;
 const unsigned long readInterval = 2000; // Lectura de sensores cada 2000 milisegundos (2 segundos)
@@ -112,7 +112,7 @@ void loop() {
     
     if (qualityEnabled) int qualityValue = readQuality();
 
-    if (temperatureEnable) float tempValue = readTemperature();
+    if (temperatureEnabled) float tempValue = readTemperature();
 
     lastReadTime = currentTime;
   }
@@ -156,7 +156,7 @@ int readQuality() {
     digitalWrite(BLUE, LOW);
   }
 
-  if (readedValue >= 180 && activateActuator) 
+  if (readedValue >= 180 && actuatorsEnabled) 
     digitalWrite(buzzerPin, HIGH);
   else
     digitalWrite(buzzerPin, LOW);
@@ -194,23 +194,22 @@ int handleWebRequests() {
 
       if (request.indexOf("GET /lcdBacklight") != -1) {
         processCommand('l');
-        if (lcdBacklight) sendHTTPResponse("true");
-        else sendHTTPResponse("false");
+        sendHTTPResponse(String(lcdBacklight));
       }
       
       else if (request.indexOf("GET /getQuality") != -1) {
         if (qualityEnabled) sendHTTPResponse(String(analogRead(mqPin)));
-        else sendHTTPResponse("Not Enable");
+        else sendHTTPResponse(String(qualityEnabled));
       }
       
       else if (request.indexOf("GET /getTemperature") != -1) {
-        if (temperatureEnable) sendHTTPResponse(String(dht.getTemperature()));
-        else sendHTTPResponse("Not Enable");
+        if (temperatureEnabled) sendHTTPResponse(String(dht.getTemperature()));
+        else sendHTTPResponse(String(temperatureEnable));
       }
       
       else if (request.indexOf("GET /getHumidity") != -1) {
-        if (humidityEnable) sendHTTPResponse(String(dht.getHumidity()));
-        else sendHTTPResponse("Not Enable");
+        if (humidityEnabled) sendHTTPResponse(String(dht.getHumidity()));
+        else sendHTTPResponse(String(humidityEnable));
       }
       
       else if (request.indexOf("GET /resetDevice") != -1) {
@@ -220,26 +219,22 @@ int handleWebRequests() {
       
       else if (request.indexOf("GET /temperature") != -1) {
         processCommand('t');
-        buffer = (temperatureEnable) ? "habilitado." : "deshabilitado.";
-        sendHTTPResponse("Senseo de temperatura " + buffer);
+        sendHTTPResponse(String(temperatureEnabled));
       }
       
       else if (request.indexOf("GET /humidity") != -1) {
         processCommand('h');
-        buffer = (humidityEnable) ? "habilitado." : "deshabilitado.";
-        sendHTTPResponse("Senseo de humedad " + buffer);
+        sendHTTPResponse(String(humidityEnabled));
       }
       
       else if (request.indexOf("GET /quality") != -1) {
         processCommand('q');
-        buffer = (qualityEnabled) ? "habilitado." : "deshabilitado.";
-        sendHTTPResponse("Senseo de particulas por millón " + buffer);
+        sendHTTPResponse(String(qualityEnabled));
       }
       
       else if (request.indexOf("GET /actuator") != -1) {
         processCommand('a');
-        buffer = (activateActuator) ? "habilitados" : "deshabilitados";
-        sendHTTPResponse("Actuadores " + buffer);
+        sendHTTPResponse(String(actuatorsEnabled));
       }
 
       else {
@@ -400,8 +395,8 @@ void toggleQualityDataSending() {
 }
 
 void toggleActuator() {
-  activateActuator = !activateActuator;
-  if (activateActuator) {
+  actuatorsEnabled = !actuatorsEnabled;
+  if (actuatorsEnabled) {
     Serial.println("Comando ejecutado: Activar el actuador (LED y Buzzer).");
   } else {
     Serial.println("Comando ejecutado: Desactivar el actuador (LED y Buzzer).");

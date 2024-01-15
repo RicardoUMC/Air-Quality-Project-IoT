@@ -2,19 +2,19 @@ const moment = require('moment');
 const axios = require('axios');
 
 function processSensorData(airQualityResponse, temperatureResponse, humidityResponse) {
-    if (airQualityResponse === "Not Enabled") {
+    if (airQualityResponse == false) {
         airQualityResponse = "Sensor deshabilitado";
     } else {
         airQualityResponse = airQualityResponse + " PPM";
     }
 
-    if (temperatureResponse === "Not Enabled") {
+    if (temperatureResponse == false) {
         temperatureResponse = "Sensor deshabilitado";
     } else {
         temperatureResponse = temperatureResponse + "°C";
     }
 
-    if (humidityResponse === "Not Enabled") {
+    if (humidityResponse == false) {
         humidityResponse = "Sensor deshabilitado";
     } else {
         humidityResponse = humidityResponse + "%";
