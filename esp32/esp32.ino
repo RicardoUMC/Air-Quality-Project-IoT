@@ -15,6 +15,7 @@ const int mqPin = A5;
 const int temPin = 15;
 const int buzzerPin = 14;
 
+bool lcdBacklight = true;
 bool temperatureEnable = true;
 bool humidityEnable = true;
 bool qualityEnabled = true;
@@ -191,14 +192,10 @@ int handleWebRequests() {
     if (client.available()) {
       request = client.readStringUntil('\r');
 
-      if (request.indexOf("GET /LCD/On") != -1) {
+      if (request.indexOf("GET /lcdBacklight") != -1) {
         processCommand('l');
-        sendHTTPResponse("true");
-      }
-      
-      else if (request.indexOf("GET /LCD/Off") != -1) {
-        processCommand('d');
-        sendHTTPResponse("false");
+        if (lcdBacklight) sendHTTPResponse("true");
+        else sendHTTPResponse("false");
       }
       
       else if (request.indexOf("GET /getQuality") != -1) {
@@ -305,30 +302,13 @@ void processCommand(char command) {
   switch (command) {
     case 'L':
     case 'l':
-      lcd.backlight();
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Retroiluminacion ON");
-      Serial.println("Comando ejecutado: Encender retroiluminación.");
+      toggleLCD();
       delay(1000);
       lcd.clear();
       break;
-    case 'D':
-    case 'd':
-      lcd.noBacklight();
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Retroiluminacion OFF");
-      Serial.println("Comando ejecutado: Apagar retroiluminación.");
-      break;
     case 'X':
     case 'x':
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Reinicio del programa");
-      Serial.println("Reiniciando el programa...");
-      delay(1000); // Espera 1 segundo
-      ESP.restart(); // Reinicia el ESP32
+      resetESP();
       break;
     case 'T':
     case 't':
@@ -366,6 +346,30 @@ void processCommand(char command) {
       lcd.clear();
       break;
   }
+}
+
+void toggleLCD() {
+  lcdBacklight = !lcdBacklight;
+  if (lcdBacklight) {
+    lcd.backlight();
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("BACKLIGHT ON");
+    Serial.println("Comando ejecutado: Encender LCD.");
+  } else {
+    lcd.noBacklight();
+    lcd.clear();
+    Serial.println("Comando ejecutado: Apagar LCD.");
+  }
+}
+
+void resetESP() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Reinicio del programa");
+  Serial.println("Reiniciando el programa...");
+  delay(1000); // Espera 1 segundo
+  ESP.restart(); // Reinicia el ESP32
 }
 
 void toggleTempDataSending() {
