@@ -6,6 +6,11 @@ socket.on('connected', (message) => {
 });
 
 const button = document.getElementById('refresh-button');
+const turnLCD = document.getElementById('turn-off');
+const disableParticles = document.getElementById('disable-particles');
+const disableTemperature = document.getElementById('disable-temperature');
+const disableHumidity = document.getElementById('disable-humidity');
+const restartDevice = document.getElementById('restart-device');
 
 button.addEventListener('click', async () => {
     try {
@@ -16,9 +21,9 @@ button.addEventListener('click', async () => {
             const responseData = await response.json();
             console.log('Respuesta del servidor:', responseData);
             
-            document.getElementById('PPM').innerText = `${responseData.airQuality} PPM`;
-            document.getElementById('temperatureData').innerText = `${responseData.temperature}°C`;
-            document.getElementById('humidity').innerText = `${responseData.humidity}%`;
+            document.getElementById('PPM').innerText = `${responseData.airQuality}`;
+            document.getElementById('temperatureData').innerText = `${responseData.temperature}`;
+            document.getElementById('humidity').innerText = `${responseData.humidity}`;
         } else {
             throw new Error('Error al obtener la respuesta del servidor');
         }
