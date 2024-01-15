@@ -232,7 +232,7 @@ int handleWebRequests() {
         sendHTTPResponse(String(qualityEnabled));
       }
       
-      else if (request.indexOf("GET /actuator") != -1) {
+      else if (request.indexOf("GET /actuators") != -1) {
         processCommand('a');
         sendHTTPResponse(String(actuatorsEnabled));
       }
