@@ -86,6 +86,56 @@ async function toggleLCD(path) {
     }
 }
 
+async function toggleQuality(path) {
+    try {
+        const response = await axios.get('http://192.168.0.7:8080' + path);
+
+        return response.data;
+    } catch (error) {
+        throw `No se pudo modificar la retroiluminación de la LCD. ${error}`;
+    }
+}
+
+async function toggleTemperature(path) {
+    try {
+        const response = await axios.get('http://192.168.0.7:8080' + path);
+
+        return response.data;
+    } catch (error) {
+        throw `No se pudo modificar la retroiluminación de la LCD. ${error}`;
+    }
+}
+
+async function toggleHumidity(path) {
+    try {
+        const response = await axios.get('http://192.168.0.7:8080' + path);
+
+        return response.data;
+    } catch (error) {
+        throw `No se pudo modificar la retroiluminación de la LCD. ${error}`;
+    }
+}
+
+async function toggleActuators(path) {
+    try {
+        const response = await axios.get('http://192.168.0.7:8080' + path);
+
+        return response.data;
+    } catch (error) {
+        throw `No se pudo modificar la retroiluminación de la LCD. ${error}`;
+    }
+}
+
+async function resetDevice(path) {
+    try {
+        const response = await axios.get('http://192.168.0.7:8080' + path);
+
+        return response.data;
+    } catch (error) {
+        throw `No se pudo modificar la retroiluminación de la LCD. ${error}`;
+    }
+}
+
 function consoleTime(message) {
     const time = moment().format('DD-MM-YYYY HH:mm:ss');
     console.log(`[${time}] ${message}`);
@@ -98,5 +148,10 @@ module.exports = {
     getTemperatureData,
     getHumidityData,
     toggleLCD,
+    toggleQuality,
+    toggleTemperature,
+    toggleHumidity,
+    toggleActuators,
+    resetDevice,
     consoleTime
 };
