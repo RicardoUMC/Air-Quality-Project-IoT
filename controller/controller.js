@@ -30,9 +30,9 @@ app.get('/', (req, res) => {
 // Rutas GET
 app.get('/getSensorsData', async (req, res) => {
     try {
-        const airQualityResponse = await model.getQualityData()        
-        const temperatureResponse = await model.getTemperatureData()        
-        const humidityResponse = await model.getHumidityData()
+        const airQualityResponse = await model.getQualityData('/getQuality')        
+        const temperatureResponse = await model.getTemperatureData('/getTemperature')        
+        const humidityResponse = await model.getHumidityData('/getHumidity')
 
         model.consoleTime(`Particulas en el ambiente: ${airQualityResponse}`);
         model.consoleTime(`Temperatura: ${temperatureResponse}`);

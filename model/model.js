@@ -1,6 +1,8 @@
 const moment = require('moment');
 const axios = require('axios');
 
+const SERVER_PORT = 'http://192.168.255.7:8080';
+
 function processSensorData(airQualityResponse, temperatureResponse, humidityResponse) {
     if (airQualityResponse == false) {
         airQualityResponse = "Sensor deshabilitado";
@@ -46,19 +48,19 @@ async function formatDataToJSON(airQualityResponse, temperatureResponse, humidit
     }
 }
 
-async function getQualityData() {
+async function getQualityData(path) {
     try {
-        const response = await axios.get('http://192.168.0.7:8080/getQuality');
+        const response = await axios.get(SERVER_PORT + path);
 
         return response.data;
     } catch (error) {
-        throw `No se pudo conseguir el valor de calidad de air. ${error}`;
+        throw `No se pudo conseguir el valor de calidad de aire. ${error}`;
     }
 }
 
-async function getTemperatureData() {
+async function getTemperatureData(path) {
     try {
-        const response = await axios.get('http://192.168.0.7:8080/getTemperature');
+        const response = await axios.get(SERVER_PORT + path);
 
         return response.data;
     } catch (error) {
@@ -66,9 +68,9 @@ async function getTemperatureData() {
     }
 }
 
-async function getHumidityData() {
+async function getHumidityData(path) {
     try {
-        const response = await axios.get('http://192.168.0.7:8080/getHumidity');
+        const response = await axios.get(SERVER_PORT + path);
         
         return response.data;
     } catch (error) {
@@ -78,7 +80,7 @@ async function getHumidityData() {
 
 async function toggleLCD(path) {
     try {
-        const response = await axios.get('http://192.168.0.7:8080' + path);
+        const response = await axios.get(SERVER_PORT + path);
 
         return response.data;
     } catch (error) {
@@ -88,7 +90,7 @@ async function toggleLCD(path) {
 
 async function toggleQuality(path) {
     try {
-        const response = await axios.get('http://192.168.0.7:8080' + path);
+        const response = await axios.get(SERVER_PORT + path);
 
         return response.data;
     } catch (error) {
@@ -98,7 +100,7 @@ async function toggleQuality(path) {
 
 async function toggleTemperature(path) {
     try {
-        const response = await axios.get('http://192.168.0.7:8080' + path);
+        const response = await axios.get(SERVER_PORT + path);
 
         return response.data;
     } catch (error) {
@@ -108,7 +110,7 @@ async function toggleTemperature(path) {
 
 async function toggleHumidity(path) {
     try {
-        const response = await axios.get('http://192.168.0.7:8080' + path);
+        const response = await axios.get(SERVER_PORT + path);
 
         return response.data;
     } catch (error) {
@@ -118,7 +120,7 @@ async function toggleHumidity(path) {
 
 async function toggleActuators(path) {
     try {
-        const response = await axios.get('http://192.168.0.7:8080' + path);
+        const response = await axios.get(SERVER_PORT + path);
 
         return response.data;
     } catch (error) {
@@ -128,7 +130,7 @@ async function toggleActuators(path) {
 
 async function resetDevice(path) {
     try {
-        const response = await axios.get('http://192.168.0.7:8080' + path);
+        const response = await axios.get(SERVER_PORT + path);
 
         return response.data;
     } catch (error) {
