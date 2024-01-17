@@ -1,10 +1,15 @@
+/* The line `const socket = io();` is initializing a WebSocket connection using the `io()` function.
+This allows the client to establish a real-time, bidirectional communication channel with the
+server. The `socket` object can be used to send and receive messages between the client and server. */
 const socket = io();
 
-// Manejar el evento 'connected' emitido desde el servidor
+/* The code is setting up an event listener for the 'connected' event on the WebSocket connection. */
 socket.on('connected', (message) => {
     console.log(message);
 });
 
+/* These lines of code are retrieving references to HTML elements with specific IDs using the
+`document.getElementById()` method. */
 const button = document.getElementById('refresh-button');
 const toggleLCD = document.getElementById('toggle-lcd');
 const toggleParticles = document.getElementById('toggle-particles');
@@ -13,6 +18,9 @@ const toggleHumidity = document.getElementById('toggle-humidity');
 const toggleActuators = document.getElementById('toggle-actuators');
 const restartDevice = document.getElementById('restart-device');
 
+/* The `button.addEventListener('click', async () => { ... })` code block is adding an event listener
+to the `button` element. When the button is clicked, the code inside the event listener will be
+executed. */
 button.addEventListener('click', async () => {
     try {
         const response = await fetch('/getSensorsData');
@@ -32,6 +40,9 @@ button.addEventListener('click', async () => {
     }
 });
 
+/* The `toggleLCD.addEventListener('click', async () => { ... })` code block is adding an event
+listener to the `toggleLCD` element. When the element is clicked, the code inside the event listener
+will be executed. */
 toggleLCD.addEventListener('click', async () => {
     try {
         const response = await fetch('/lcdBacklight');
@@ -56,6 +67,9 @@ toggleLCD.addEventListener('click', async () => {
     }
 });
 
+/* The `toggleParticles.addEventListener('click', async () => { ... })` code block is adding an event
+listener to the `toggleParticles` element. When the element is clicked, the code inside the event
+listener will be executed. */
 toggleParticles.addEventListener('click', async () => {
     try {
         const response = await fetch('/quality');
@@ -80,6 +94,9 @@ toggleParticles.addEventListener('click', async () => {
     }
 });
 
+/* The `toggleTemperature.addEventListener('click', async () => { ... })` code block is adding an event
+listener to the `toggleTemperature` element. When the element is clicked, the code inside the event
+listener will be executed. */
 toggleTemperature.addEventListener('click', async () => {
     try {
         const response = await fetch('/temperature');
@@ -104,6 +121,9 @@ toggleTemperature.addEventListener('click', async () => {
     }
 });
 
+/* The `toggleHumidity.addEventListener('click', async () => { ... })` code block is adding an event
+listener to the `toggleHumidity` element. When the element is clicked, the code inside the event
+listener will be executed. */
 toggleHumidity.addEventListener('click', async () => {
     try {
         const response = await fetch('/humidity');
@@ -128,6 +148,9 @@ toggleHumidity.addEventListener('click', async () => {
     }
 });
 
+/* The `toggleActuators.addEventListener('click', async () => { ... })` code block is adding an event
+listener to the `toggleActuators` element. When the element is clicked, the code inside the event
+listener will be executed. */
 toggleActuators.addEventListener('click', async () => {
     try {
         const response = await fetch('/actuators');
@@ -152,6 +175,9 @@ toggleActuators.addEventListener('click', async () => {
     }
 });
 
+/* The code block `restartDevice.addEventListener('click', async () => { ... })` is adding an event
+listener to the `restartDevice` element. When the element is clicked, the code inside the event
+listener will be executed. */
 restartDevice.addEventListener('click', async () => {
     try {
         const response = await fetch('/resetDevice');

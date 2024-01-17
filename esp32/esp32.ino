@@ -4,6 +4,11 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
+/********************************************************************************/
+/* The code below is the definition of constants for colors (BLUE, GREEN, RED)
+and a port number (PORT). It also declares and initializes variables for a
+connection counter (counterConnection), pins for a moisture sensor (mqPin),
+temperature sensor (temPin), and buzzer (buzzerPin). */
 #define BLUE 25
 #define GREEN 26
 #define RED 27
@@ -22,20 +27,23 @@ bool qualityEnabled = true;
 bool actuatorsEnabled = true;
 
 unsigned long lastReadTime = 0;
-const unsigned long readInterval = 2000; // Lectura de sensores cada 2000 milisegundos (2 segundos)
+const unsigned long readInterval = 2000;
 
 DHTesp dht;
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // Dirección I2C, número de columnas y filas
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
 char *ssid = "--------";
 char *password = "--------";
 
 WiFiServer server(PORT);
 WiFiClient client;
-String serverAddress = "http://192.168.0.6:8080/";
+/********************************************************************************/
 
-String request;
-
+/**
+ * The setup function initializes various pins, sets up the WiFi connection, and initializes the LCD
+ * display and DHT sensor.
+ */
 void setup() {
   pinMode(mqPin, INPUT);
   pinMode(GREEN, OUTPUT);
@@ -107,6 +115,10 @@ void setup() {
   delay(2500);
 }
 
+/**
+ * The main function "loop" handles web requests, reads quality and temperature values at specified
+ * intervals, and processes commands received from the serial port.
+ */
 void loop() {
   int result = handleWebRequests();
 
@@ -125,9 +137,14 @@ void loop() {
     char command = Serial.read();
     processCommand(command);
   }
-  
 }
 
+/**
+ * The function "readQuality" reads the value from an analog pin, displays it on an LCD screen and
+ * controls actuators based on the value.
+ * 
+ * @return the value of the variable "readedValue", which is the result of the analogRead() function.
+ */
 int readQuality() {
   int readedValue = analogRead(mqPin);
 
@@ -170,6 +187,12 @@ int readQuality() {
   return readedValue;
 }
 
+/**
+ * The function "readTemperature" reads the temperature value from a sensor, displays it on a serial
+ * monitor and an LCD screen, and returns the temperature value.
+ * 
+ * @return the temperature value that was read from the sensor.
+ */
 float readTemperature()
 {
   float readedValue = dht.getTemperature();
@@ -187,13 +210,20 @@ float readTemperature()
   return readedValue;
 }
 
+/**
+ * The function handles web requests by processing different commands and sending appropriate
+ * responses.
+ * 
+ * @return an integer value. If a client is available and a valid request is received, the function
+ * returns 1. Otherwise, it returns 0.
+ */
 int handleWebRequests() {
   client = server.available();
 
   if (!client) return 0;
 
   Serial.println("Nuevo cliente");
-  String buffer = "";
+  String request = "";
   while (client.connected()) {
     if (client.available()) {
       request = client.readStringUntil('\r');
@@ -264,32 +294,12 @@ int handleWebRequests() {
   return 1;
 }
 
-// UNUSED
-String formatQualityData(int value) {
-  return "airQuality=" + String(value);
-}
-
-// UNUSED
-String formatTemperatureData(float value) {
-  return "temperature=" + String(value);
-}
-
-// UNUSED
-int sendSensorsData(String &data) {
-  if (WiFi.status() != WL_CONNECTED)
-    WiFi.begin(ssid, password);
-
-  HTTPClient http;
-
-  http.begin(serverAddress);
-  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-  int httpResponseCode = http.POST(data);
-  http.end();
-
-  return httpResponseCode > 0;
-}
-
+/**
+ * The function sends an HTTP response with the provided content.
+ * 
+ * @param content The "content" parameter is a string that represents the response content that will be
+ * sent back to the client. It can be any text or data that you want to include in the response.
+ */
 void sendHTTPResponse(String content) {
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: text/plain");
@@ -299,6 +309,14 @@ void sendHTTPResponse(String content) {
   client.println();
 }
 
+/**
+ * The function "processCommand" takes a character command as input and performs different actions
+ * based on the command received.
+ * 
+ * @param command The parameter "command" is of type char and represents the command received from an
+ * external source. It is used in a switch statement to determine the action to be taken based on the
+ * command.
+ */
 void processCommand(char command) {
   switch (command) {
     case 'L':
@@ -349,6 +367,10 @@ void processCommand(char command) {
   }
 }
 
+/**
+ * The function toggleLCD toggles the backlight of an LCD display and prints a message to the serial
+ * monitor.
+ */
 void toggleLCD() {
   lcdBacklight = !lcdBacklight;
   if (lcdBacklight) {
@@ -364,15 +386,20 @@ void toggleLCD() {
   }
 }
 
+/* The `resetESP()` function is responsible for restarting the ESP32 microcontroller. */
 void resetESP() {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Reinicio del programa");
   Serial.println("Reiniciando el programa...");
-  delay(1000); // Espera 1 segundo
-  ESP.restart(); // Reinicia el ESP32
+  delay(1000);
+  ESP.restart();
 }
 
+/**
+ * The function toggleTempDataSending toggles the state of temperatureEnabled and prints a message
+ * indicating whether temperature data sending is enabled or stopped.
+ */
 void toggleTempDataSending() {
   temperatureEnabled = !temperatureEnabled;
   if (temperatureEnabled) {
@@ -382,6 +409,10 @@ void toggleTempDataSending() {
   }
 }
 
+/**
+ * The function toggleHumidityDataSending toggles the state of the humidityEnabled variable and prints
+ * a message indicating whether the data sending is enabled or stopped.
+ */
 void toggleHumidityDataSending() {
   humidityEnabled = !humidityEnabled;
   if (humidityEnabled) {
@@ -391,6 +422,10 @@ void toggleHumidityDataSending() {
   }
 }
 
+/**
+ * The function toggleQualityDataSending toggles the state of qualityEnabled and prints a message
+ * indicating whether data from the air particle sensor is being sent or stopped.
+ */
 void toggleQualityDataSending() {
   qualityEnabled = !qualityEnabled;
   if (qualityEnabled) {
@@ -400,6 +435,10 @@ void toggleQualityDataSending() {
   }
 }
 
+/**
+ * The function toggleActuator toggles the state of the actuators (LED and Buzzer) and prints a
+ * corresponding message.
+ */
 void toggleActuator() {
   actuatorsEnabled = !actuatorsEnabled;
   if (actuatorsEnabled) {
